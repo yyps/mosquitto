@@ -49,13 +49,11 @@ def do_test(proto_ver):
 
         # Now reconnect and expect a publish message.
         sock = mosq_test.do_client_connect(connect_packet, connack2_packet, timeout=30, port=port)
-        mosq_test.expect_packet(sock, "publish", publish_packet)
-        sock.send(puback_packet)
-        rc = 0
+        if mosq_test.expect_packet(sock, "publish", publish_packet):
+            sock.send(puback_packet)
+            rc = 0
 
         sock.close()
-    except mosq_test.TestError:
-        pass
     finally:
         broker.terminate()
         broker.wait()

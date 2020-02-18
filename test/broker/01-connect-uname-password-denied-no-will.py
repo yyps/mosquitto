@@ -53,8 +53,6 @@ def do_test(proto_ver):
         sock1.close()
         rc = 0
 
-    except mosq_test.TestError:
-        pass
     finally:
         os.remove(conf_file)
         os.remove(pw_file)

@@ -40,7 +40,6 @@ int main(int argc, char *argv[])
 	while(run == -1){
 		mosq->loop();
 	}
-	delete mosq;
 
 	mosqpp::lib_cleanup();
 

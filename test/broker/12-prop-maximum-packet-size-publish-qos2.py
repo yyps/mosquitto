@@ -45,8 +45,6 @@ try:
     sock.send(pubrel2_packet)
     mosq_test.receive_unordered(sock, pubcomp2_packet, publish2_packet, "pubcomp 2/publish2")
     rc = 0
-except mosq_test.TestError:
-    pass
 finally:
     broker.terminate()
     broker.wait()

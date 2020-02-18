@@ -48,16 +48,15 @@ def single_test(port, per_listener, username, topic, expect_deny):
 
         sock = mosq_test.do_client_connect(connect_packet, connack_packet, port=port)
         mosq_test.do_send_receive(sock, subscribe_packet, suback_packet, "suback")
-        mosq_test.do_send_receive(sock, publish1s_packet, puback1s_packet, "puback")
+        sock.send(publish1s_packet)
         if expect_deny:
+            mosq_test.expect_packet(sock, "puback", puback1s_packet)
             mosq_test.do_ping(sock)
         else:
-            mosq_test.expect_packet(sock, "publish1r", publish1r_packet)
+            mosq_test.receive_unordered(sock, publish1r_packet, puback1s_packet, "publish1r / puback")
         sock.close()
 
         rc = 0
-    except mosq_test.TestError:
-        pass
     finally:
         os.remove(conf_file)
         broker.terminate()

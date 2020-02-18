@@ -39,8 +39,6 @@ try:
     sock.send(publish2_packet)
     mosq_test.receive_unordered(sock, puback2_packet, publish2_packet, "puback 2/publish2")
     rc = 0
-except mosq_test.TestError:
-    pass
 finally:
     broker.terminate()
     broker.wait()

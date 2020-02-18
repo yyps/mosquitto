@@ -22,10 +22,8 @@ def do_test(value):
     try:
         sock = mosq_test.do_client_connect(connect_packet, connack_packet, port=port)
         sock.send(publish_packet)
-        mosq_test.expect_packet(sock, "disconnect", disconnect_packet)
-        rc = 0
-    except mosq_test.TestError:
-        pass
+        if mosq_test.expect_packet(sock, "disconnect", disconnect_packet):
+            rc = 0
     finally:
         broker.terminate()
         broker.wait()

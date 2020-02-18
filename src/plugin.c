@@ -111,11 +111,10 @@ const char *mosquitto_client_username(const struct mosquitto *context)
 }
 
 
-int mosquitto_broker_publish(
-		const char *clientid,
+int mosquitto_plugin_publish(
 		const char *topic,
 		int payloadlen,
-		void *payload,
+		const void *payload,
 		int qos,
 		bool retain,
 		mosquitto_property *properties)
@@ -123,36 +122,24 @@ int mosquitto_broker_publish(
 	struct mosquitto_message_v5 *msg;
 	struct mosquitto_db *db;
 
-	if(topic == NULL
-			|| payloadlen < 0
-			|| (payloadlen > 0 && payload == NULL)
-			|| qos < 0 || qos > 2){
-
-		return MOSQ_ERR_INVAL;
-	}
-
 	msg = mosquitto__malloc(sizeof(struct mosquitto_message_v5));
 	if(msg == NULL) return MOSQ_ERR_NOMEM;
 	
 	msg->next = NULL;
 	msg->prev = NULL;
-	if(clientid){
-		msg->clientid = mosquitto__strdup(clientid);
-		if(msg->clientid == NULL){
-			mosquitto__free(msg);
-			return MOSQ_ERR_NOMEM;
-		}
-	}else{
-		msg->clientid = NULL;
-	}
 	msg->topic = mosquitto__strdup(topic);
 	if(msg->topic == NULL){
-		mosquitto__free(msg->clientid);
 		mosquitto__free(msg);
 		return MOSQ_ERR_NOMEM;
 	}
 	msg->payloadlen = payloadlen;
-	msg->payload = payload;
+	msg->payload = mosquitto__calloc(1, payloadlen+1);
+	if(msg->payload == NULL){
+		mosquitto__free(msg->topic);
+		mosquitto__free(msg);
+		return MOSQ_ERR_NOMEM;
+	}
+	memcpy(msg->payload, payload, payloadlen);
 	msg->qos = qos;
 	msg->retain = retain;
 	msg->properties = properties;
@@ -162,42 +149,6 @@ int mosquitto_broker_publish(
 	DL_APPEND(db->plugin_msgs, msg);
 
 	return MOSQ_ERR_SUCCESS;
-}
-
-
-int mosquitto_broker_publish_copy(
-		const char *clientid,
-		const char *topic,
-		int payloadlen,
-		const void *payload,
-		int qos,
-		bool retain,
-		mosquitto_property *properties)
-{
-	void *payload_out;
-
-	if(topic == NULL
-			|| payloadlen < 0
-			|| (payloadlen > 0 && payload == NULL)
-			|| qos < 0 || qos > 2){
-
-		return MOSQ_ERR_INVAL;
-	}
-
-	payload_out = calloc(1, payloadlen+1);
-	if(payload_out == NULL){
-		return MOSQ_ERR_NOMEM;
-	}
-	memcpy(payload_out, payload, payloadlen);
-
-	return mosquitto_broker_publish(
-			clientid,
-			topic,
-			payloadlen,
-			payload_out,
-			qos,
-			retain,
-			properties);
 }
 
 

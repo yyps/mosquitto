@@ -38,12 +38,10 @@ try:
 
     # Wait for session to expire
     time.sleep(3)
-    mosq_test.expect_packet(sock1, "publish", publish_packet)
-    rc = 0
+    if mosq_test.expect_packet(sock1, "publish", publish_packet):
+        rc = 0
 
     sock1.close()
-except mosq_test.TestError:
-    pass
 finally:
     broker.terminate()
     broker.wait()

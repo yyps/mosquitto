@@ -29,8 +29,6 @@ def do_test(proto_ver):
         sock.close()
         rc = 0
 
-    except mosq_test.TestError:
-        pass
     finally:
         os.remove(conf_file)
         broker.terminate()

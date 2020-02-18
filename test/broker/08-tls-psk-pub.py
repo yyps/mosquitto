@@ -53,12 +53,10 @@ try:
         raise ValueError
     (stdo, stde) = pub.communicate()
 
-    mosq_test.expect_packet(sock, "publish", publish_packet)
-    rc = 0
+    if mosq_test.expect_packet(sock, "publish", publish_packet):
+        rc = 0
 
     sock.close()
-except mosq_test.TestError:
-    pass
 finally:
     os.remove(conf_file)
     broker.terminate()

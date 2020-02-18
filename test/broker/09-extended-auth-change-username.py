@@ -68,8 +68,6 @@ def do_test(per_listener):
 
         sock.close()
 
-    except mosq_test.TestError:
-        pass
     finally:
         os.remove(conf_file)
         os.remove(acl_file)

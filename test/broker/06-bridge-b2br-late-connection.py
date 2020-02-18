@@ -57,15 +57,13 @@ def do_test(proto_ver):
         client.close()
         # We've now sent a message to the broker that should be delivered to us via the bridge
 
-        mosq_test.expect_packet(bridge, "connect", connect_packet)
-        bridge.send(connack_packet)
+        if mosq_test.expect_packet(bridge, "connect", connect_packet):
+            bridge.send(connack_packet)
 
-        mosq_test.expect_packet(bridge, "publish", publish_packet)
-        rc = 0
+            if mosq_test.expect_packet(bridge, "publish", publish_packet):
+                rc = 0
 
         bridge.close()
-    except mosq_test.TestError:
-        pass
     finally:
         os.remove(conf_file)
         try:

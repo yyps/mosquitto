@@ -179,7 +179,7 @@ const char *mosquitto_client_username(const struct mosquitto *client);
 int mosquitto_set_username(struct mosquitto *client, const char *username);
 
 
-/* Function: mosquitto_broker_publish
+/* Function: mosquitto_plugin_publish
  *
  * Publish a message from within a plugin.
  *
@@ -188,75 +188,8 @@ int mosquitto_set_username(struct mosquitto *client, const char *username);
  * `mosquitto_auth_acl_check(, MOSQ_ACL_WRITE, , )` for checking. Read access
  * will be enforced as normal for individual clients when they are due to
  * receive the message.
- *
- * It can be used to send messages to all clients that have a matching
- * subscription, or to a single client whether or not it has a matching
- * subscription.
- *
- * Parameters:
- *  clientid -   optional string. If set to NULL, the message is delivered to all
- *               clients. If non-NULL, the message is delivered only to the
- *               client with the corresponding client id. If the client id
- *               specified is not connected, the message will be dropped.
- *  topic -      message topic
- *  payloadlen - payload length in bytes. Can be 0 for an empty payload.
- *  payload -    payload bytes. If payloadlen > 0 this must not be NULL. Must
- *               be allocated on the heap. Will be freed by mosquitto after use if the
- *               function returns success.
- *  qos -        message QoS to use.
- *  retain -     should retain be set on the message. This does not apply if
- *               clientid is non-NULL.
- *  properties - MQTT v5 properties to attach to the message. If the function
- *               returns success, then properties is owned by the broker and
- *               will be freed at a later point.
- *
- * Returns:
- *   MOSQ_ERR_SUCCESS - on success
- *   MOSQ_ERR_INVAL - if topic is NULL, if payloadlen < 0, if payloadlen > 0
- *                    and payload is NULL, if qos is not 0, 1, or 2.
- *   MOSQ_ERR_NOMEM - on out of memory
  */
-int mosquitto_broker_publish(
-		const char *clientid,
-		const char *topic,
-		int payloadlen,
-		void *payload,
-		int qos,
-		bool retain,
-		mosquitto_property *properties);
-
-
-/* Function: mosquitto_broker_publish_copy
- *
- * Publish a message from within a plugin.
- *
- * This function is identical to mosquitto_broker_publish, except that a copy
- * of `payload` is taken.
- *
- * Parameters:
- *  clientid -   optional string. If set to NULL, the message is delivered to all
- *               clients. If non-NULL, the message is delivered only to the
- *               client with the corresponding client id. If the client id
- *               specified is not connected, the message will be dropped.
- *  topic -      message topic
- *  payloadlen - payload length in bytes. Can be 0 for an empty payload.
- *  payload -    payload bytes. If payloadlen > 0 this must not be NULL.
- *	             Memory remains the property of the calling function.
- *  qos -        message QoS to use.
- *  retain -     should retain be set on the message. This does not apply if
- *               clientid is non-NULL.
- *  properties - MQTT v5 properties to attach to the message. If the function
- *               returns success, then properties is owned by the broker and
- *               will be freed at a later point.
- *
- * Returns:
- *   MOSQ_ERR_SUCCESS - on success
- *   MOSQ_ERR_INVAL - if topic is NULL, if payloadlen < 0, if payloadlen > 0
- *                    and payload is NULL, if qos is not 0, 1, or 2.
- *   MOSQ_ERR_NOMEM - on out of memory
- */
-int mosquitto_broker_publish_copy(
-		const char *clientid,
+int mosquitto_plugin_publish(
 		const char *topic,
 		int payloadlen,
 		const void *payload,

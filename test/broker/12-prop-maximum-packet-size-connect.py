@@ -19,8 +19,6 @@ try:
     sock = mosq_test.do_client_connect(connect_packet, b"", port=port)
     # Exception occurs if connack packet returned
     rc = 0
-except mosq_test.TestError:
-    pass
 finally:
     broker.terminate()
     broker.wait()

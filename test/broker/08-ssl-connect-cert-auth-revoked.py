@@ -41,8 +41,6 @@ try:
             print(err.strerror)
             raise ValueError(err.errno)
 
-except mosq_test.TestError:
-    pass
 finally:
     os.remove(conf_file)
     time.sleep(0.5)

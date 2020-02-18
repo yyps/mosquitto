@@ -33,14 +33,12 @@ def do_test(clean_session):
         sock2.close()
 
         t_start = time.time()
-        mosq_test.expect_packet(sock1, "publish", publish_packet)
-        t_finish = time.time()
-        if t_finish - t_start > 2 and t_finish - t_start < 5:
-            rc = 0
+        if mosq_test.expect_packet(sock1, "publish", publish_packet):
+            t_finish = time.time()
+            if t_finish - t_start > 2 and t_finish - t_start < 5:
+                rc = 0
 
         sock1.close()
-    except mosq_test.TestError:
-        pass
     finally:
         broker.terminate()
         broker.wait()

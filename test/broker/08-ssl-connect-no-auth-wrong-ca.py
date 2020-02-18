@@ -36,8 +36,6 @@ try:
 except ssl.SSLError as err:
     if err.errno == 1:
         rc = 0
-except mosq_test.TestError:
-    pass
 finally:
     os.remove(conf_file)
     ssock.close()

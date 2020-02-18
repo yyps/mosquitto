@@ -60,17 +60,15 @@ def do_test():
         helper(port)
 
         # Should have now received a publish command
-        mosq_test.expect_packet(sock, "publish 1", publish_1_packet)
-        sock.send(pubrec_1_packet)
+        if mosq_test.expect_packet(sock, "publish 1", publish_1_packet):
+            sock.send(pubrec_1_packet)
 
-        mosq_test.expect_packet(sock, "publish 2", publish_2_packet)
-        mosq_test.do_send_receive(sock, pubrec_2_packet, pubrel_2_packet, "pubrel 2")
-        sock.send(pubcomp_2_packet)
-        rc = 0
+            if mosq_test.expect_packet(sock, "publish 2", publish_2_packet):
+                mosq_test.do_send_receive(sock, pubrec_2_packet, pubrel_2_packet, "pubrel 2")
+                sock.send(pubcomp_2_packet)
+                rc = 0
 
         sock.close()
-    except mosq_test.TestError:
-        pass
     finally:
         broker.terminate()
         broker.wait()

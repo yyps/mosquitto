@@ -32,8 +32,6 @@ def prop_subpub_helper(props_out, props_in):
         rc = 0
 
         sock.close()
-    except mosq_test.TestError:
-        pass
     finally:
         broker.terminate()
         broker.wait()

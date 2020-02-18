@@ -22,8 +22,6 @@ def do_test(proto_ver):
         # Exception occurs if connack packet returned
         rc = 0
         sock.close()
-    except mosq_test.TestError:
-        pass
     finally:
         broker.terminate()
         broker.wait()

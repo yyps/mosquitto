@@ -47,8 +47,6 @@ def do_test(clean_session):
 
         sock1.close()
         sock2.close()
-    except mosq_test.TestError:
-        pass
     finally:
         broker.terminate()
         broker.wait()

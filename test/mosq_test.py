@@ -15,10 +15,6 @@ vg_index = 1
 vg_logfiles = []
 
 
-class TestError(Exception):
-    def __init__(self, message="Mismatched packets"):
-        self.message = message
-
 def start_broker(filename, cmd=None, port=0, use_conf=False, expect_fail=False):
     global vg_index
     global vg_logfiles
@@ -38,7 +34,7 @@ def start_broker(filename, cmd=None, port=0, use_conf=False, expect_fail=False):
             cmd = ['../../src/mosquitto', '-v', '-c', filename.replace('.py', '.conf')]
         elif cmd is not None and port == 0:
             port = 1888
-
+            
     if os.environ.get('MOSQ_USE_VALGRIND') is not None:
         logfile = filename+'.'+str(vg_index)+'.vglog'
         cmd = ['valgrind', '-q', '--trace-children=yes', '--leak-check=full', '--show-leak-kinds=all', '--log-file='+logfile] + cmd
@@ -87,10 +83,7 @@ def expect_packet(sock, name, expected):
         rlen = 1
 
     packet_recvd = sock.recv(rlen)
-    if packet_matches(name, packet_recvd, expected):
-        return True
-    else:
-        raise TestError
+    return packet_matches(name, packet_recvd, expected)
 
 
 def packet_matches(name, recvd, expected):
@@ -101,17 +94,17 @@ def packet_matches(name, recvd, expected):
         except struct.error:
             print("Received (not decoded, len=%d): %s" % (len(recvd), recvd))
             for i in range(0, len(recvd)):
-                print('%c'%(recvd[i]),)
+                print('%02x'%(recvd[i]),)
         try:
             print("Expected: "+to_string(expected))
         except struct.error:
             print("Expected (not decoded, len=%d): %s" % (len(expected), expected))
             for i in range(0, len(expected)):
-                print('%c'%(expected[i]),)
+                print('%02x'%(expected[i]),)
 
-        return False
+        return 0
     else:
-        return True
+        return 1
 
 
 def receive_unordered(sock, recv1_packet, recv2_packet, error_string):

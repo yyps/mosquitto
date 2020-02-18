@@ -35,12 +35,10 @@ try:
     (conn, address) = sock.accept()
     conn.settimeout(10)
 
-    mosq_test.expect_packet(conn, "connect", connect_packet)
-    rc = 0
+    if mosq_test.expect_packet(conn, "connect", connect_packet):
+        rc = 0
 
     conn.close()
-except mosq_test.TestError:
-    pass
 finally:
     client.terminate()
     client.wait()

@@ -39,8 +39,6 @@ try:
     rc = 0
 
     ssock.close()
-except mosq_test.TestError:
-    pass
 finally:
     os.remove(conf_file)
     broker.terminate()

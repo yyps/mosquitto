@@ -44,14 +44,13 @@ try:
     (conn, address) = ssock.accept()
     conn.settimeout(100)
 
-    mosq_test.do_receive_send(conn, connect_packet, connack_packet, "connect")
+    if mosq_test.expect_packet(conn, "connect", connect_packet):
+        conn.send(connack_packet)
 
-    mosq_test.expect_packet(conn, "disconnect", disconnect_packet)
-    rc = 0
+        if mosq_test.expect_packet(conn, "disconnect", disconnect_packet):
+            rc = 0
 
     conn.close()
-except mosq_test.TestError:
-    pass
 finally:
     client.terminate()
     client.wait()

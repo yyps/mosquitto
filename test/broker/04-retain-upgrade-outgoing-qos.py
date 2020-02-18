@@ -36,12 +36,10 @@ def do_test(proto_ver):
 
         mosq_test.do_send_receive(sock, subscribe_packet, suback_packet, "suback")
 
-        mosq_test.expect_packet(sock, "publish", publish_packet2)
-        rc = 0
+        if mosq_test.expect_packet(sock, "publish", publish_packet2):
+            rc = 0
 
         sock.close()
-    except mosq_test.TestError:
-        pass
     finally:
         os.remove(conf_file)
         broker.terminate()
