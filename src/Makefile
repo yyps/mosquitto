@@ -73,7 +73,8 @@ OBJS=	mosquitto.o \
 		util_topic.o \
 		websockets.o \
 		will_delay.o \
-		will_mosq.o
+		will_mosq.o \
+		xtreport.o
 
 mosquitto : ${OBJS}
 	${CROSS_COMPILE}${CC} ${BROKER_LDFLAGS} $^ -o $@ $(BROKER_LDADD)
@@ -274,6 +275,9 @@ will_delay.o : will_delay.c mosquitto_broker_internal.h
 	${CROSS_COMPILE}${CC} $(BROKER_CPPFLAGS) $(BROKER_CFLAGS) -c $< -o $@
 
 will_mosq.o : ../lib/will_mosq.c ../lib/will_mosq.h
+	${CROSS_COMPILE}${CC} $(BROKER_CPPFLAGS) $(BROKER_CFLAGS) -c $< -o $@
+
+xtreport.o : xtreport.c mosquitto_broker_internal.h
 	${CROSS_COMPILE}${CC} $(BROKER_CPPFLAGS) $(BROKER_CFLAGS) -c $< -o $@
 
 mosquitto_passwd : mosquitto_passwd.o misc_mosq.o

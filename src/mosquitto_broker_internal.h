@@ -790,5 +790,7 @@ void will_delay__check(struct mosquitto_db *db, time_t now);
 void will_delay__send_all(struct mosquitto_db *db);
 void will_delay__remove(struct mosquitto *mosq);
 
+void xtreport(struct mosquitto_db *db);
+
 #endif
 

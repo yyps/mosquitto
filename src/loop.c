@@ -391,6 +391,7 @@ int mosquitto_main_loop(struct mosquitto_db *db, mosq_sock_t *listensock, int li
 		}
 		if(flag_tree_print){
 			sub__tree_print(db->subs, 0);
+			xtreport(db);
 			flag_tree_print = false;
 		}
 #ifdef WITH_WEBSOCKETS
